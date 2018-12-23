@@ -13,6 +13,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Multiformats.Hash" Version="1.4.0" />
+    <PackageReference Include="Nethereum.ABI" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
