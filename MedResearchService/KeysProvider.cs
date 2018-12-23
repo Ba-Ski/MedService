@@ -15,7 +15,8 @@ namespace MedResearchService
 
         public ContractMethod JoinMethod { get; private set;  }
         public ContractMethod FinishMethod { get; private set; }
-        public ContractMethod IsContractFinished { get; private set; }
+        public ContractMethod isTrialFinished { get; private set; }
+        public ContractMethod PatientExist { get; private set; }
 
         public Key GetKeys(string pubId)
         {
@@ -33,13 +34,19 @@ namespace MedResearchService
             FinishMethod = new ContractMethod()
             {
                 Signature = "finishTrial",
-                ParamsTypes = new string[0]
+                ParamsTypes = new[] { "string" }
             };
 
-            IsContractFinished = new ContractMethod()
+            isTrialFinished = new ContractMethod()
             {
                 Signature = "isTrialFinished",
                 ParamsTypes = new string[0]
+            };
+
+            PatientExist = new ContractMethod()
+            {
+                Signature = "patientExist",
+                ParamsTypes = new[] { "string" }
             };
 
             using (var file = System.IO.File.OpenText(@"C:\Users\baski\Projects\hakaton\keys.json"))
@@ -50,7 +57,7 @@ namespace MedResearchService
 
             Contracts = new Dictionary<string, Contract>()
             {
-                {"0x803e2A5462E42B9168D8AB5125348f5227560FAE", new Contract()
+                {"0x709607A142ee8BF71743c701147f0f00D8525C7C", new Contract()
                 {
                     Name = "LSD research",
                     ContractId = "0x803e2A5462E42B9168D8AB5125348f5227560FAE",
@@ -114,8 +121,10 @@ public class ContractMethod
 
 public interface IKeyProvider
 {
+    ContractMethod PatientExist { get; }
     ContractMethod JoinMethod { get; }
     ContractMethod FinishMethod { get; }
+    ContractMethod isTrialFinished { get; }
     Dictionary<string, Dictionary<string, int>> UsersContracts { get; set; }
     List<Key> Keys { get; }
     Dictionary<string, Contract> Contracts { get; }

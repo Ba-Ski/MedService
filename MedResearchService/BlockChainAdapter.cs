@@ -132,13 +132,35 @@ namespace MedResearchService
             };
 
             var response = await Client.SendAsync(request);
-            using (HttpContent content = response.Content)
-            {
-                // ... Read the string.
-                string result = await content.ReadAsStringAsync();
-            }
 
             return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
+        }
+
+        public async Task<string> GetStringFromContract(string pubKey, string privKey, string contractId, string sig)
+        {
+                var json = JsonConvert.SerializeObject(new
+            {
+                modifyState = false,
+                contractInvocation = sig
+            });
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri(ContractsURL + contractId),
+                Method = HttpMethod.Put,
+                Headers =
+                {
+                    { "originator-ref", pubKey },
+                    {"accept", "application/json"}
+                },
+                Content = new StringContent(json, Encoding.UTF8, "application/json"),
+            };
+
+            var response = await Client.SendAsync(request);
+            using (var content = response.Content)
+            {
+                return await content.ReadAsStringAsync();
+            }
         }
 
         public string CreateMethodSig(string functionSignature, string[] paramsTypes, string[] arguments)
@@ -154,11 +176,20 @@ namespace MedResearchService
 
             return sig;
         }
+        public bool Decode(string hash)
+        {
+            var val = JsonConvert.DeserializeObject<Dictionary<string, string>>(hash)["contractResponse"];
+            var a = new Nethereum.ABI.Decoders.BoolTypeDecoder();
+            return a.Decode(Encoding.UTF8.GetBytes(val));
+        }
     }
+
 
     public interface IBlockChainAdapter
     {
+        bool Decode(string hash);
         Task<bool> InteractWithContract(string pubKey, string privKey, string contractId, string sig);
+        Task<string> GetStringFromContract(string pubKey, string privKey, string contractId, string sig);
         string CreateMethodSig(string functionSignature, string[] paramsTypes, string[] arguments);
         Task<bool> CreateResearch(MedResearch research, string id);
         Task<bool> CreateUserIndications(Dictionary<string, string> indications, string id);

@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MedResearchService.Entities;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace MedResearchService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [DisableCors]
     public class ResearcheController : ControllerBase
     {
         private readonly IBlockChainAdapter _blockChainAdapter;
@@ -55,6 +58,9 @@ namespace MedResearchService.Controllers
             var sig = _blockChainAdapter.CreateMethodSig(_keyProvider.JoinMethod.Signature, _keyProvider.JoinMethod.ParamsTypes, new []{key});
             var res = _blockChainAdapter.InteractWithContract(key, keysInfo.PrivateKey, id, sig).Result;
 
+
+            sig = _blockChainAdapter.CreateMethodSig(_keyProvider.PatientExist.Signature, _keyProvider.PatientExist.ParamsTypes, new[]{key});
+            var code = _blockChainAdapter.GetStringFromContract(key, keysInfo.PrivateKey, id, sig).Result;
             if (!res)
             {
                 return BadRequest();
@@ -98,7 +104,7 @@ namespace MedResearchService.Controllers
 
             if (!indications.TryGetValue("ResearchId", out var researchId))
             {
-                BadRequest();
+                return BadRequest();
             }
 
             var res = _blockChainAdapter.CreateUserIndications(indications, key).Result;
@@ -109,7 +115,7 @@ namespace MedResearchService.Controllers
 
             if (!_keyProvider.UsersContracts[key].ContainsKey(researchId))
             {
-                BadRequest();
+                return BadRequest();
             }
 
             _keyProvider.UsersContracts[key][researchId]++;
@@ -122,8 +128,17 @@ namespace MedResearchService.Controllers
                 {
                     return BadRequest();
                 }
-                var sig = _blockChainAdapter.CreateMethodSig(_keyProvider.FinishMethod.Signature, _keyProvider.FinishMethod.ParamsTypes, new string[0]);
+                var sig = _blockChainAdapter.CreateMethodSig(_keyProvider.FinishMethod.Signature, _keyProvider.FinishMethod.ParamsTypes, new[] {key});
                 res = _blockChainAdapter.InteractWithContract(key, keysInfo.PrivateKey, researchId, sig).Result;
+
+                sig = _blockChainAdapter.CreateMethodSig(_keyProvider.isTrialFinished.Signature, _keyProvider.isTrialFinished.ParamsTypes, new string[0]);
+                var code = _blockChainAdapter.GetStringFromContract(key, keysInfo.PrivateKey, researchId, sig).Result;
+                var val = JsonConvert.DeserializeObject<Dictionary<string, string>>(code)["contractResponse"];
+                var a = val[val.Length - 1];
+                if (a == '1')
+                {
+                    _keyProvider.Contracts[researchId].State = ContractState.FINISHED;
+                }
                 if (!res)
                 {
                     BadRequest();

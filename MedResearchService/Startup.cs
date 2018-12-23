@@ -41,6 +41,10 @@ namespace MedResearchService
             {
                 app.UseHsts();
             }
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:8080", "http://www.myclientserver.com")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
 
             app.UseHttpsRedirection();
             app.UseMvc();
