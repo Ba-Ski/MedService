@@ -24,9 +24,9 @@ namespace MedResearchService.Controllers
 
         [Route("user/all")]
         [HttpGet]
-        public ActionResult<string> GetAllIndicates()
+        public ActionResult<string> GetAllIndicates(string authKey)
         {
-            var key = HttpContext.Request.Cookies["auth-key"];
+            var key = authKey;
             if (key == null)
             {
                 return BadRequest();
@@ -37,9 +37,9 @@ namespace MedResearchService.Controllers
 
         [Route("user/join/{id}")]
         [HttpPost]
-        public ActionResult<bool> JoinResearch(string id)
+        public ActionResult<bool> JoinResearch(string id, string authKey)
         {
-            var key = HttpContext.Request.Cookies["auth-key"];
+            var key = authKey;
             if (key == null)
             {
                 return BadRequest();
@@ -94,9 +94,9 @@ namespace MedResearchService.Controllers
 
         [Route("user/add")]
         [HttpPost]
-        public ActionResult<string> AddIndicationsByUserId([FromBody] Dictionary<string,string> indications)
+        public ActionResult<string> AddIndicationsByUserId([FromBody] Dictionary<string,string> indications, string authKey)
         {
-            var key = HttpContext.Request.Cookies["auth-key"];
+            var key = authKey;
             if (key == null)
             {
                 return BadRequest();
@@ -151,9 +151,9 @@ namespace MedResearchService.Controllers
 
         [Route("all")]
         [HttpGet]
-        public ActionResult<List<Contract>> GetAllResearches()
+        public ActionResult<List<Contract>> GetAllResearches(string authKey)
         {
-            var key = HttpContext.Request.Cookies["auth-key"];
+            var key = authKey;
             if (key == null)
             {
                 return BadRequest();
