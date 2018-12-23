@@ -60,7 +60,7 @@ namespace MedResearchService
                 {"0x709607A142ee8BF71743c701147f0f00D8525C7C", new Contract()
                 {
                     Name = "LSD research",
-                    ContractId = "0x803e2A5462E42B9168D8AB5125348f5227560FAE",
+                    ContractId = "0x709607A142ee8BF71743c701147f0f00D8525C7C",
                     Description = "Does LSD make our life better? Does LSD progrmmists work better? Do you have some change?",
                     State = ContractState.PENDING,
                     Params = new [] {"Mood", "Creativity", "Happyness", "Kittens"},
@@ -72,7 +72,7 @@ namespace MedResearchService
                 {"0x3c65B4AbdFB08fC9725011fC8e4CC8D242fA5621", new Contract()
                 {
                     Name = "Super hero powers",
-                    ContractId = "0xBe4768e2a9B70A462fB0B2cd6720b5753E991278",
+                    ContractId = "0x3c65B4AbdFB08fC9725011fC8e4CC8D242fA5621",
                     Description = "Could medecine give us superhuman powers? World will be safer and calmly with super heroes! Who protect us from villaims? Who will bring us 13th salary? Only super heroes! Join us!",
                     State = ContractState.PENDING,
                     Params = new [] {"Strength", "Speed", "Inteligence", "Agility"},
