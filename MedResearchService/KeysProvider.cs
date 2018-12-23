@@ -49,7 +49,7 @@ namespace MedResearchService
                 ParamsTypes = new[] { "string" }
             };
 
-            using (var file = System.IO.File.OpenText(@"C:\Users\baski\Projects\hakaton\keys.json"))
+            using (var file = System.IO.File.OpenText(@"../keys.json"))
             {
                 var serializer = new JsonSerializer();
                 Keys = (List<Key>)serializer.Deserialize(file, typeof(List<Key>));
